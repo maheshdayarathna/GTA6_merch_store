@@ -8,6 +8,7 @@ import TimezoneTabs from "@/components/ui/TimezoneTabs";
 import Logo from "@/components/Logo";
 import ShareModal from "@/components/ShareModal";
 import { progressPercent, splitDuration, useNow } from "@/hooks/useCountdown";
+import { SHOP_ENABLED } from "@/lib/config";
 import { assets, copy } from "@/lib/copy";
 import { timezones } from "@/lib/timezones";
 import type { SiteSettings } from "@/lib/types";
@@ -38,6 +39,19 @@ export default function Hero({ settings }: Props) {
         minute: "2-digit",
         timeZoneName: "short",
       }).format(new Date(releaseDate)),
+    [tz.tz, releaseDate],
+  );
+
+  const releaseLabel = useMemo(
+    () =>
+      new Intl.DateTimeFormat("en-US", {
+        timeZone: tz.tz,
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })
+        .format(new Date(releaseDate))
+        .toUpperCase(),
     [tz.tz, releaseDate],
   );
 
@@ -80,20 +94,22 @@ export default function Hero({ settings }: Props) {
         sizes="100vw"
         className="-z-20 object-cover"
       />
-      <div className="absolute inset-0 -z-10 bg-black/50" />
+      <div className="absolute inset-0 -z-10 bg-black/80" />
 
       <header className="flex items-center justify-between px-5 py-5 md:px-10">
         <Logo size="md" />
-        <Button variant="solid" size="sm" href={shopifyStoreUrl}>
-          {copy.hero.shop}
-        </Button>
+        {SHOP_ENABLED && (
+          <Button variant="solid" size="sm" href={shopifyStoreUrl}>
+            {copy.hero.shop}
+          </Button>
+        )}
       </header>
 
       <div className="mx-auto flex w-full max-w-5xl flex-1 flex-col items-center justify-center gap-6 px-5 pb-12">
         {/* Snapshot region: this is what SHARE captures as an image. */}
         <div
           ref={captureRef}
-          className="w-full rounded-3xl bg-gradient-to-br from-[#12081f] to-[#3a0d3a] p-6 md:p-10"
+          className="w-full p-6 md:p-10"
         >
           <h1 className="text-center font-display text-4xl tracking-wide md:text-6xl">
             {copy.hero.heading}
@@ -114,10 +130,10 @@ export default function Hero({ settings }: Props) {
               >
                 {units.map((u) => (
                   <div key={u.label} className="flex flex-col items-center">
-                    <span className="grid min-w-16 place-items-center rounded-2xl bg-black/50 px-2 py-3 font-display text-4xl tabular-nums md:min-w-28 md:text-7xl">
+                    <span className="grid min-w-16 place-items-center bg-gradient-to-b from-[#ff9ad5] to-[#e0189b] bg-clip-text px-2 py-3 font-display text-5xl font-bold tabular-nums text-transparent drop-shadow-[0_0_14px_rgba(255,60,180,0.65)] md:min-w-28 md:text-8xl">
                       {u.value === undefined ? "--" : pad(u.value)}
                     </span>
-                    <span className="mt-2 text-[10px] uppercase tracking-widest text-cream/70 md:text-xs">
+                    <span className="mt-2 text-[10px] uppercase tracking-widest text-pink-100/80 md:text-xs">
                       {u.label}
                     </span>
                   </div>
@@ -132,6 +148,9 @@ export default function Hero({ settings }: Props) {
           <div className="mt-8">
             <ProgressBar percent={percent} />
           </div>
+          <p className="mt-4 bg-gradient-to-b from-[#ff9ad5] to-[#e0189b] bg-clip-text text-center text-sm font-bold uppercase tracking-[0.3em] text-transparent drop-shadow-[0_0_10px_rgba(255,60,180,0.65)] md:text-xl">
+            {releaseLabel}
+          </p>
         </div>
 
         <Button variant="outline" onClick={() => setShareOpen(true)}>

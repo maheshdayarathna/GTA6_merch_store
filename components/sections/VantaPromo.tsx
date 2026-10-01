@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { SHOP_ENABLED } from "@/lib/config";
 import Button from "@/components/ui/Button";
 import Logo from "@/components/Logo";
 import { assets, copy } from "@/lib/copy";
@@ -21,9 +22,11 @@ export default function VantaPromo({ shopUrl }: Props) {
         <h2 className="font-display text-4xl tracking-wide md:text-6xl">
           {copy.vanta.heading}
         </h2>
-        <Button variant="solid" href={shopUrl}>
-          {copy.vanta.cta}
-        </Button>
+        {SHOP_ENABLED && (
+          <Button variant="solid" href={shopUrl}>
+            {copy.vanta.cta}
+          </Button>
+        )}
       </div>
     </section>
   );
