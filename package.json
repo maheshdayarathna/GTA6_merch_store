@@ -9,10 +9,15 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/vision": "^4.22.1",
     "html-to-image": "^1.11.13",
     "next": "15.5.26",
+    "next-sanity": "^11.6.13",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "sanity": "^4.22.1",
+    "styled-components": "^6.5.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

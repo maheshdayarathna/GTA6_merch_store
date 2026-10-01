@@ -10,8 +10,8 @@ import { newsArticles, siteSettings } from "@/lib/mock-data";
 
 type Params = { slug: string };
 
-export function generateStaticParams() {
-  return newsArticles.map((a) => ({ slug: a.slug }));
+export async function generateStaticParams() {
+  return (await newsArticles()).map((a) => ({ slug: a.slug }));
 }
 
 export async function generateMetadata({
@@ -20,7 +20,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const article = newsArticles.find((a) => a.slug === slug);
+  const article = (await newsArticles()).find((a) => a.slug === slug);
   if (!article) return {};
   return {
     title: article.title,
@@ -39,12 +39,13 @@ export default async function ArticlePage({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
-  const article = newsArticles.find((a) => a.slug === slug);
+  const article = (await newsArticles()).find((a) => a.slug === slug);
   if (!article) notFound();
+  const settings = await siteSettings();
 
   return (
     <>
-      <SiteHeader shopUrl={siteSettings.shopifyStoreUrl} />
+      <SiteHeader shopUrl={settings.shopifyStoreUrl} />
       <main className="mx-auto max-w-3xl px-5 py-12">
         <Link href="/news" className="text-sm text-cream/60 hover:text-accent">
           &larr; All news
@@ -64,7 +65,7 @@ export default async function ArticlePage({
           </div>
         )}
       </main>
-      <Footer settings={siteSettings} />
+      <Footer settings={settings} />
     </>
   );
 }

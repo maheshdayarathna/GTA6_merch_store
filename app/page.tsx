@@ -12,20 +12,25 @@ import {
   siteSettings,
 } from "@/lib/mock-data";
 
-export default function Home() {
+export default async function Home() {
+  const [articles, community, settings] = await Promise.all([
+    newsArticles(),
+    communityItems(),
+    siteSettings(),
+  ]);
   return (
     <main>
-      <Hero settings={siteSettings} />
-      <Explore articles={newsArticles} />
-      <VantaPromo shopUrl={siteSettings.shopifyStoreUrl} />
+      <Hero settings={settings} />
+      <Explore articles={articles} />
+      <VantaPromo shopUrl={settings.shopifyStoreUrl} />
       {SHOP_ENABLED && (
         <ShopGrid
           products={featuredProducts}
-          shopUrl={siteSettings.shopifyStoreUrl}
+          shopUrl={settings.shopifyStoreUrl}
         />
       )}
-      <Community items={communityItems} />
-      <Footer settings={siteSettings} />
+      <Community items={community} />
+      <Footer settings={settings} />
     </main>
   );
 }

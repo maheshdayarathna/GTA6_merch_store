@@ -9,11 +9,12 @@ import { newsArticles, siteSettings } from "@/lib/mock-data";
 
 export const metadata: Metadata = { title: "News" };
 
-export default function NewsPage() {
-  const articles = sortNewestFirst(newsArticles);
+export default async function NewsPage() {
+  const [all, settings] = await Promise.all([newsArticles(), siteSettings()]);
+  const articles = sortNewestFirst(all);
   return (
     <>
-      <SiteHeader shopUrl={siteSettings.shopifyStoreUrl} />
+      <SiteHeader shopUrl={settings.shopifyStoreUrl} />
       <main className="mx-auto max-w-6xl px-5 py-12 md:px-10">
         <h1 className="font-display text-4xl tracking-wide md:text-6xl">
           {copy.newsPage.heading}
@@ -48,7 +49,7 @@ export default function NewsPage() {
           ))}
         </ul>
       </main>
-      <Footer settings={siteSettings} />
+      <Footer settings={settings} />
     </>
   );
 }
