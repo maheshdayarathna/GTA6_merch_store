@@ -7,21 +7,32 @@ type Props = { items: CommunityItem[] };
 export default function Community({ items }: Props) {
   const sorted = [...items].sort((a, b) => a.order - b.order);
 
+  // Each group must be wider than the viewport, otherwise the -50% loop leaves
+  // an empty gap on wide screens. Repeat the cards to cover ~2600px (card + gap = 272px).
+  const repeats = sorted.length
+    ? Math.max(1, Math.ceil(2600 / (sorted.length * 272)))
+    : 1;
+
   const group = (hidden: boolean) => (
     <ul
       className="flex shrink-0 gap-4 pr-4"
       aria-hidden={hidden || undefined}
     >
-      {sorted.map((item) => (
-        <li key={item.title}>
-          <CommunityCard
-            thumbnail={item.thumbnail}
-            title={item.title}
-            tag={item.tag}
-            videoUrl={item.videoUrl}
-          />
-        </li>
-      ))}
+      {Array.from({ length: repeats }, (_, copy) =>
+        sorted.map((item) => (
+          <li
+            key={`${copy}-${item.title}`}
+            aria-hidden={copy > 0 || undefined}
+          >
+            <CommunityCard
+              thumbnail={item.thumbnail}
+              title={item.title}
+              tag={item.tag}
+              videoUrl={item.videoUrl}
+            />
+          </li>
+        )),
+      )}
     </ul>
   );
 
